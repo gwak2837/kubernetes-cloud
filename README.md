@@ -18,7 +18,7 @@ PORT=4000
 $ yarn dev
 ```
 
-파일 변경 사항이 바로 반영되는 Node.js 웹 서버를 실행합니다.
+파일 변경 사항이 바로 반영되는 Next.js 웹 서버를 실행합니다.
 
 or
 
@@ -26,7 +26,7 @@ or
 $ yarn build && yarn start
 ```
 
-TypeScript 파일을 JavaScript로 트랜스파일한 후 Node.js 웹 서버를 실행합니다.
+TypeScript 파일을 JavaScript로 트랜스파일 및 최적화한 후 Next.js 웹 서버를 실행합니다.
 
 or
 
