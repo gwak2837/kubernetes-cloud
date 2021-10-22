@@ -1,0 +1,51 @@
+{
+  "ORM": {
+    "prefix": "orm",
+    "body": [
+      "import type { ${TM_DIRECTORY/.*\\/(.*)$/${1}/g} } from 'src/database/sobok'",
+      "import type { ${TM_DIRECTORY/.*\\/(.*)$/${1:/capitalize}/g} } from 'src/graphql/generated/graphql'",
+      "import { camelToSnake, snakeKeyToCamelKey } from '../../utils/commons'",
+      "",
+      "// All GraphQL fields -> Database columns",
+      "export function ${TM_DIRECTORY/.*\\/(.*)$/$1/g}FieldColumnMapping(${TM_DIRECTORY/.*\\/(.*)$/$1/g}Field: keyof ${TM_DIRECTORY/.*\\/(.*)$/${1:/capitalize}/g}) {",
+      "  switch (${TM_DIRECTORY/.*\\/(.*)$/$1/g}Field) {",
+      "    default:",
+      "      return camelToSnake(${TM_DIRECTORY/.*\\/(.*)$/$1/g}Field)",
+      "  }",
+      "}",
+      "",
+      "// All database columns -> GraphQL fields",
+      "export function ${TM_DIRECTORY/.*\\/(.*)$/$1/g}ORM(${TM_DIRECTORY/.*\\/(.*)$/$1/g}: Partial<${TM_DIRECTORY/.*\\/(.*)$/${1}/g}>): any {",
+      "  return {",
+      "    ...snakeKeyToCamelKey(${TM_DIRECTORY/.*\\/(.*)$/$1/g}),",
+      "  }",
+      "}",
+      ""
+    ],
+    "description": "GraphQL Object Relation Mapping"
+  },
+  "Query": {
+    "prefix": "query",
+    "body": [
+      "import format from 'pg-format'",
+      "import type { ApolloContext } from '../../apollo/server'",
+      "import type { QueryResolvers } from '../generated/graphql'",
+      "import type { $1 as $2 } from '../generated/graphql'",
+      "import { poolQuery } from '../../database/postgres'",
+      "import { selectColumnFromField } from '../../utils/ORM'",
+      "import $1 from './sql/$1.sql'",
+      "",
+      "export const Query: QueryResolvers<ApolloContext> = {",
+      "  $1: async (_, __, { user }, info) => {",
+      "    const columns = selectColumnFromField(info, $1FieldColumnMapping)",
+      "",
+      "    const { rows } = await poolQuery(format(await $1, columns))",
+      "",
+      "    return rows.map((row) => $1ORM(row))",
+      "  },",
+      "}",
+      ""
+    ],
+    "description": "GraphQL Query Resolver"
+  }
+}
