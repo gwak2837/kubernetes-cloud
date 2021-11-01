@@ -1,9 +1,56 @@
+import { Button, Input } from 'antd'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import Navigation from 'src/components/Navigation'
 import { digestMessageWithSHA256 } from 'src/utils'
+import styled from 'styled-components'
+
+type RegisterFormValues = {
+  email: string
+  password: string
+  passwordConfirm: string
+}
+
+export const validateEmail = {
+  required: '필수 항목입니다.',
+  maxLength: {
+    value: 50,
+    message: '최대 50글자 이하로 입력해주세요.',
+  },
+  pattern: {
+    value: /\S+@\S+\.\S+/,
+    message: '이메일을 형식에 맞게 입력해주세요.',
+  },
+}
+
+export const validatePassword = {
+  required: '필수 항목입니다.',
+  minLength: {
+    value: 8,
+    message: '최소 8글자 이상 입력해주세요.',
+  },
+}
+
+export const GridContainerForm = styled.form`
+  display: grid;
+  gap: 1rem;
+
+  margin: 0 auto;
+  padding: 20vh 1rem;
+  max-width: 400px;
+`
+
+export const Label = styled.h4`
+  padding: 0 0.3rem 0.3rem;
+`
+
+export const RedText = styled.h5`
+  color: #800000;
+  padding: 0.3rem 0.3rem 0;
+`
 
 async function registerRequest(userInfo: Record<string, string>) {
   const jwt = sessionStorage.getItem('jwt')
@@ -19,9 +66,22 @@ async function registerRequest(userInfo: Record<string, string>) {
 }
 
 const RegisterPage: NextPage = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
+  const {
+    control,
+    formState: { errors },
+    getValues,
+    handleSubmit,
+  } = useForm<RegisterFormValues>({
+    defaultValues: { email: '', password: '', passwordConfirm: '' },
+  })
+
+  const validatePasswordConfirm = {
+    required: '필수 항목입니다.',
+    validate: {
+      same: (passwordConfirm: string) =>
+        passwordConfirm === getValues('password') || '비밀번호가 일치하지 않습니다.',
+    },
+  }
 
   const router = useRouter()
 
@@ -37,14 +97,7 @@ const RegisterPage: NextPage = () => {
     },
   })
 
-  async function register(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-
-    if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다.')
-      return
-    }
-
+  async function register({ email, password }: RegisterFormValues) {
     const passwordHash = await digestMessageWithSHA256(password)
     mutation.mutate({ email, passwordHash })
   }
@@ -53,36 +106,60 @@ const RegisterPage: NextPage = () => {
     <>
       <Navigation />
 
-      <form onSubmit={register}>
+      <GridContainerForm onSubmit={handleSubmit(register)}>
         <label>
-          이메일
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="이메일을 입력해주세요"
-            type="email"
-            value={email}
+          <Label>이메일</Label>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <Input placeholder="이메일을 입력해주세요" size="large" type="email" {...field} />
+            )}
+            rules={validateEmail}
           />
+          {errors.email && <RedText>{errors.email.message}</RedText>}
         </label>
+
         <label>
-          비밀번호
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호를 입력해주세요"
-            type="password"
-            value={password}
+          <Label>비밀번호</Label>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <Input
+                placeholder="비밀번호를 입력해주세요"
+                size="large"
+                type="password"
+                {...field}
+              />
+            )}
+            rules={validatePassword}
           />
+          {errors.password && <RedText>{errors.password.message}</RedText>}
         </label>
+
         <label>
-          비밀번호 확인
-          <input
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-            placeholder="비밀번호를 다시 입력해주세요"
-            type="password"
-            value={passwordConfirm}
+          <Label>비밀번호 확인</Label>
+          <Controller
+            control={control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <Input
+                placeholder="비밀번호를 다시 입력해주세요"
+                size="large"
+                type="password"
+                {...field}
+              />
+            )}
+            rules={validatePasswordConfirm}
           />
+          {errors.passwordConfirm && <RedText>{errors.passwordConfirm.message}</RedText>}
         </label>
-        <button type="submit">회원가입</button>
-      </form>
+
+        <Button htmlType="submit" size="large" type="primary">
+          회원가입
+        </Button>
+      </GridContainerForm>
     </>
   )
 }
