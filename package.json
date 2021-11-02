@@ -29,6 +29,7 @@
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
+    "@svgr/webpack": "^5.5.0",
     "@types/node": "^16.11.2",
     "@types/react": "17.0.31",
     "@types/react-query": "^1.2.9",
