@@ -1,10 +1,9 @@
-import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { useQuery } from 'react-query'
-import Navigation from 'src/components/Navigation'
+import NavigationLayout from 'src/layouts/NavigationLayout'
 
-const PostPage: NextPage = () => {
+export default function PostPage() {
   const router = useRouter()
   const postId = (router.query.id ?? '') as string
 
@@ -17,7 +16,6 @@ const PostPage: NextPage = () => {
 
   return (
     <div>
-      <Navigation />
       {isLoading ? (
         <div>Loading</div>
       ) : isError ? (
@@ -32,4 +30,6 @@ const PostPage: NextPage = () => {
   )
 }
 
-export default PostPage
+PostPage.getLayout = function getLayout(page: ReactElement) {
+  return <NavigationLayout>{page}</NavigationLayout>
+}

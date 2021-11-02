@@ -1,8 +1,9 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { useMutation } from 'react-query'
 import Navigation from 'src/components/Navigation'
+import NavigationLayout from 'src/layouts/NavigationLayout'
 
 async function postCreationRequest(post: Record<string, unknown>) {
   const jwt = sessionStorage.getItem('jwt')
@@ -17,7 +18,7 @@ async function postCreationRequest(post: Record<string, unknown>) {
   return await response.json()
 }
 
-const PostCreationPage: NextPage = () => {
+export default function PostCreationPage() {
   const [title, setTitle] = useState('')
   const [contents, setContents] = useState('')
 
@@ -30,7 +31,7 @@ const PostCreationPage: NextPage = () => {
     onSuccess: (response) => {
       if (response.postId) {
         console.log(response.postId)
-        router.push('/posts')
+        router.push('/')
       }
     },
   })
@@ -41,7 +42,6 @@ const PostCreationPage: NextPage = () => {
 
   return (
     <div>
-      <Navigation />
       <h2>글 쓰기</h2>
 
       <label htmlFor="title">제목</label>
@@ -65,4 +65,6 @@ const PostCreationPage: NextPage = () => {
   )
 }
 
-export default PostCreationPage
+PostCreationPage.getLayout = function getLayout(page: ReactElement) {
+  return <NavigationLayout>{page}</NavigationLayout>
+}

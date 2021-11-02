@@ -1,19 +1,49 @@
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { ReactElement, useState } from 'react'
 import { useQuery } from 'react-query'
-import Navigation from 'src/components/Navigation'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import NavigationLayout from 'src/layouts/NavigationLayout'
+import styled from 'styled-components'
 
-async function postsRequest() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post`)
-  return await response.json()
-}
+const BlueH2 = styled.h2`
+  background: #2496ed;
+  color: #fff;
+  margin: 0 auto;
+  text-align: center;
+  padding: 1rem;
+`
 
-const HomePage: NextPage = () => {
+const Padding = styled.div`
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 50rem;
+`
+
+const limit = 3
+
+export default function HomePage() {
+  const [pageIndex, setPageIndex] = useState(1)
+
+  async function postsRequest() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ limit, offset: pageIndex - 1 }),
+    })
+    return await response.json()
+  }
+
   const { data, isLoading, isError } = useQuery('posts', postsRequest)
-  console.log('👀 - query', data)
 
   const router = useRouter()
+
+  const infiniteScrollRef = useInfiniteScroll({
+    onIntersecting: () => 1,
+    hasMoreData: false,
+  })
 
   function goToPostCreationPage() {
     if (!globalThis.sessionStorage?.getItem('jwt')) {
@@ -25,25 +55,26 @@ const HomePage: NextPage = () => {
   }
 
   return (
-    <div>
-      <Navigation />
-      <h2>글 목록</h2>
+    <Padding>
+      <BlueH2>쿠버네티스 기반의 클라우드시스템 엔지니어 양성과정</BlueH2>
       <button onClick={goToPostCreationPage}>글쓰기</button>
       <ul>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : isError ? (
-          <div>오류 발생</div>
-        ) : (
-          data.map((post: any) => (
+        {!data?.message &&
+          data?.map((post: any) => (
             <li key={post.id}>
               <Link href={`/posts/${post.id}`}>{post.title}</Link>
+              <div>{new Date(post.creationTime).toLocaleDateString()}</div>
             </li>
-          ))
-        )}
+          ))}
       </ul>
-    </div>
+
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>오류 발생</div>}
+      {isError && <div ref={infiniteScrollRef}>오류 발생</div>}
+    </Padding>
   )
 }
 
-export default HomePage
+HomePage.getLayout = function getLayout(page: ReactElement) {
+  return <NavigationLayout>{page}</NavigationLayout>
+}
