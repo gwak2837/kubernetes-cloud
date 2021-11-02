@@ -12,6 +12,8 @@ NEXT_PUBLIC_BACKEND_URL=
 PORT=4000
 ```
 
+`.env.production`
+
 ### Start Node.js server
 
 ```shell
