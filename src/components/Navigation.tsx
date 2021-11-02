@@ -38,11 +38,13 @@ function Navigation() {
     <>
       <FixedPositionNav>
         <Link href="/">홈</Link>
-        <Link href="/posts">글</Link>
         {globalThis.sessionStorage?.getItem('jwt') ? (
-          <Button onClick={logout} size="large">
-            로그아웃
-          </Button>
+          <>
+            <Button onClick={logout} size="large">
+              로그아웃
+            </Button>
+            <Link href="/@">마이페이지</Link>
+          </>
         ) : (
           <>
             <Link href="/login">로그인</Link>
