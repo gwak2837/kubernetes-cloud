@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY .yarn .yarn
 COPY src src
-COPY .env.production .yarnrc.yml package.json tsconfig.json next.config.js yarn.lock ./
+COPY env .yarnrc.yml package.json tsconfig.json next.config.js yarn.lock ./
 
 RUN yarn && yarn build
 
