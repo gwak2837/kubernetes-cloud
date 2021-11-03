@@ -1,9 +1,10 @@
 import { Button, Card } from 'antd'
-import jwt_decode from 'jwt-decode'
 import Link from 'next/link'
 import router from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
+import { useRecoilValue } from 'recoil'
+import { currentUserIdAtom } from 'src/model/recoil'
 import styled from 'styled-components'
 
 const AbsolutePositionButton = styled(Button)`
@@ -29,8 +30,7 @@ type Props = {
 }
 
 function PostCard({ post }: Props) {
-  const [myUserId, setMyUserId] = useState('')
-
+  const currentUserId = useRecoilValue(currentUserIdAtom)
   const queryClient = useQueryClient()
 
   const { mutate, isLoading } = useMutation(postDeletionRequest, {
@@ -52,13 +52,6 @@ function PostCard({ post }: Props) {
     }
   }
 
-  useEffect(() => {
-    const jwt = sessionStorage.getItem('jwt')
-    if (jwt) {
-      setMyUserId(jwt_decode<any>(jwt).userId)
-    }
-  }, [])
-
   return (
     <Card
       bodyStyle={{ padding: '1rem', position: 'relative', cursor: 'pointer' }}
@@ -72,7 +65,7 @@ function PostCard({ post }: Props) {
       <div>{new Date(post.creationTime).toLocaleDateString()}</div>
       <AbsolutePositionButton
         danger
-        disabled={myUserId !== post.userId}
+        disabled={currentUserId !== post.userId}
         loading={isLoading}
         onClick={(e) => {
           e.stopPropagation()

@@ -1,9 +1,10 @@
 import { Button, Input } from 'antd'
-import type { NextPage } from 'next'
+import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
-import { ReactElement, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
+import { useSetRecoilState } from 'recoil'
+import { JWT, currentUserIdAtom } from 'src/model/recoil'
 import { digestMessageWithSHA256 } from 'src/utils'
 import styled from 'styled-components'
 
@@ -65,6 +66,8 @@ async function registerRequest(userInfo: Record<string, string>) {
 }
 
 export default function RegisterPage() {
+  const setCurrentUserId = useSetRecoilState(currentUserIdAtom)
+
   const {
     control,
     formState: { errors },
@@ -91,6 +94,7 @@ export default function RegisterPage() {
     onSuccess: (response) => {
       if (response.jwt) {
         globalThis.sessionStorage?.setItem('jwt', response.jwt)
+        setCurrentUserId(jwt_decode<JWT>(response.jwt).userId)
         router.push('/')
       }
     },

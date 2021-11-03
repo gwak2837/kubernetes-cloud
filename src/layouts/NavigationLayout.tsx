@@ -2,7 +2,10 @@ import { Button } from 'antd'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
+import { useQueryClient } from 'react-query'
+import { useRecoilState } from 'recoil'
 import { TABLET_MIN_WIDTH } from 'src/model/constant'
+import { currentUserIdAtom } from 'src/model/recoil'
 import styled from 'styled-components'
 
 const MOBILE_HEADER_HEIGHT = '4rem'
@@ -84,6 +87,7 @@ type Props = {
 
 export default function NavigationLayout({ children }: Props) {
   const router = useRouter()
+  const [currentUserId, setCurrentUserId] = useRecoilState(currentUserIdAtom)
 
   function logout(e: any) {
     e.preventDefault()
@@ -92,6 +96,7 @@ export default function NavigationLayout({ children }: Props) {
 
     if (result) {
       globalThis.sessionStorage?.removeItem('jwt')
+      setCurrentUserId('')
       router.push('/')
     }
   }
@@ -101,7 +106,7 @@ export default function NavigationLayout({ children }: Props) {
       <FixedPositionNav>
         <Link href="/">홈</Link>
         <HorizontalLine />
-        {globalThis.sessionStorage?.getItem('jwt') ? (
+        {currentUserId ? (
           <>
             <Link href="">
               <a onClick={logout}>로그아웃</a>

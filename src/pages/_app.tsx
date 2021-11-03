@@ -6,6 +6,7 @@ import { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import { ReactElement, ReactNode, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { RecoilRoot } from 'recoil'
 
 const queryClient = new QueryClient()
 
@@ -15,7 +16,7 @@ type AppPropsWithLayout = AppProps & {
   }
 }
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function KubernetesCloudApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout
 
   useEffect(() => {
@@ -24,9 +25,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {getLayout ? getLayout(<Component {...pageProps} />) : <Component {...pageProps} />}
+      <RecoilRoot>
+        {getLayout ? getLayout(<Component {...pageProps} />) : <Component {...pageProps} />}
+      </RecoilRoot>
     </QueryClientProvider>
   )
 }
 
-export default MyApp
+export default KubernetesCloudApp

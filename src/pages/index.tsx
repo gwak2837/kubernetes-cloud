@@ -1,11 +1,13 @@
 import { Button, Card } from 'antd'
 import { useRouter } from 'next/router'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query'
+import { ReactElement } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import { useRecoilValue } from 'recoil'
 import PostCard from 'src/components/PostCard'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import NavigationLayout from 'src/layouts/NavigationLayout'
 import PostLayout from 'src/layouts/PostLayout'
+import { currentUserIdAtom } from 'src/model/recoil'
 import styled from 'styled-components'
 
 const GridContainer = styled.ul`
@@ -21,6 +23,9 @@ const Right = styled.div`
 const limit = 2
 
 export default function HomePage() {
+  const currentUserId = useRecoilValue(currentUserIdAtom)
+  const router = useRouter()
+
   const {
     data,
     fetchNextPage,
@@ -44,8 +49,6 @@ export default function HomePage() {
     }
   )
 
-  const router = useRouter()
-
   const infiniteScrollRef = useInfiniteScroll({
     hasMoreData: hasNextPage,
     onIntersecting: () => {
@@ -54,7 +57,7 @@ export default function HomePage() {
   })
 
   function goToPostCreationPage() {
-    if (!globalThis.sessionStorage?.getItem('jwt')) {
+    if (!currentUserId) {
       alert('로그인이 필요합니다.')
       return
     }
