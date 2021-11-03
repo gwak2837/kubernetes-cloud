@@ -1,9 +1,8 @@
 import { Button, Card } from 'antd'
-import jwt_decode from 'jwt-decode'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query'
+import PostCard from 'src/components/PostCard'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import NavigationLayout from 'src/layouts/NavigationLayout'
 import PostLayout from 'src/layouts/PostLayout'
@@ -19,29 +18,9 @@ const Right = styled.div`
   text-align: right;
 `
 
-const AbsolutePositionButton = styled(Button)`
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
-`
-
 const limit = 2
 
-async function postDeletionRequest(postId: string) {
-  const jwt = sessionStorage.getItem('jwt')
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${postId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      ...((jwt && { Authorization: jwt }) as any),
-    },
-  })
-  return await response.json()
-}
-
 export default function HomePage() {
-  const [myUserId, setMyUserId] = useState('')
-
   const {
     data,
     fetchNextPage,
@@ -74,28 +53,6 @@ export default function HomePage() {
     },
   })
 
-  const queryClient = useQueryClient()
-
-  const { mutate } = useMutation(postDeletionRequest, {
-    onError: (error) => {
-      console.log(error)
-    },
-    onSuccess: (response) => {
-      if (response.postId) {
-        queryClient.invalidateQueries('posts')
-        console.log(response.postId)
-        router.push('/')
-      }
-    },
-  })
-
-  function deletePost(postId: string) {
-    const result = confirm('정말로 삭제하시겠습니까?')
-    if (result) {
-      mutate(postId)
-    }
-  }
-
   function goToPostCreationPage() {
     if (!globalThis.sessionStorage?.getItem('jwt')) {
       alert('로그인이 필요합니다.')
@@ -103,13 +60,6 @@ export default function HomePage() {
     }
     router.push('/posts/create')
   }
-
-  useEffect(() => {
-    const jwt = sessionStorage.getItem('jwt')
-    if (jwt) {
-      setMyUserId(jwt_decode<any>(jwt).userId)
-    }
-  }, [])
 
   return (
     <>
@@ -121,26 +71,7 @@ export default function HomePage() {
 
       <GridContainer>
         {data?.pages
-          .map((page) =>
-            page.map((post: any) => (
-              <Link key={post.id} href={`/posts/${post.id}`} passHref>
-                <a>
-                  <Card bodyStyle={{ padding: '1rem', position: 'relative' }}>
-                    {post.id} <h3>{post.title}</h3>
-                    <div>{new Date(post.creationTime).toLocaleDateString()}</div>
-                    <AbsolutePositionButton
-                      danger
-                      disabled={myUserId !== post.userId}
-                      onClick={() => deletePost(post.id)}
-                      size="small"
-                    >
-                      <h5 style={{ color: 'inherit' }}>삭제</h5>
-                    </AbsolutePositionButton>
-                  </Card>
-                </a>
-              </Link>
-            ))
-          )
+          .map((page) => page.map((post: any) => <PostCard key={post.id} post={post} />))
           .flat()}
         {isFetching && <Card loading={true} />}
       </GridContainer>

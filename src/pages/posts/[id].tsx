@@ -53,8 +53,14 @@ export default function PostPage() {
     <div>
       <GridContainer>
         <div />
-        <Button size="large">초기화</Button>
-        <Button htmlType="submit" size="large">
+        <Button
+          loading={isLoading}
+          onClick={() => reset({ title: data.title, contents: data.contents })}
+          size="large"
+        >
+          초기화
+        </Button>
+        <Button loading={isLoading} htmlType="submit" size="large">
           수정하기
         </Button>
       </GridContainer>
