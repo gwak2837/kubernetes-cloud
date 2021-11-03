@@ -4,6 +4,7 @@ import 'src/styles/globals.css'
 
 import { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import { ReactElement, ReactNode, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { RecoilRoot } from 'recoil'
@@ -24,11 +25,16 @@ function KubernetesCloudApp({ Component, pageProps }: AppPropsWithLayout) {
   }, [])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        {getLayout ? getLayout(<Component {...pageProps} />) : <Component {...pageProps} />}
-      </RecoilRoot>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          {getLayout ? getLayout(<Component {...pageProps} />) : <Component {...pageProps} />}
+        </RecoilRoot>
+      </QueryClientProvider>
+    </>
   )
 }
 
