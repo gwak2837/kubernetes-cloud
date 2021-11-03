@@ -28,6 +28,6 @@ RUN yarn
 
 USER nextjs
 
-EXPOSE $PORT
+EXPOSE 4000
 
 ENTRYPOINT ["yarn", "start"]
