@@ -1,4 +1,5 @@
-import { ReactNode } from 'react'
+import Link from 'next/link'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 
 const BlueH2 = styled.h2`
@@ -22,7 +23,11 @@ type Props = {
 export default function PostLayout({ children }: Props) {
   return (
     <Padding>
-      <BlueH2>쿠버네티스 기반의 클라우드 시스템 엔지니어 양성과정</BlueH2>
+      <Link href="/about" passHref>
+        <a>
+          <BlueH2>쿠버네티스 기반의 클라우드 시스템 엔지니어 양성과정</BlueH2>
+        </a>
+      </Link>
       {children}
     </Padding>
   )
