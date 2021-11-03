@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { fadeIn, fadeOut } from 'src/styles'
 import CheckIcon from 'src/svgs/check.svg'
 import styled from 'styled-components'

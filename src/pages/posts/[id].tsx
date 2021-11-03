@@ -1,7 +1,7 @@
 import { Button, Input } from 'antd'
 import { Card } from 'antd'
 import { useRouter } from 'next/router'
-import React, { ReactElement } from 'react'
+import { ReactElement } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import NavigationLayout from 'src/layouts/NavigationLayout'
