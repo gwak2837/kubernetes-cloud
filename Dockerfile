@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY .yarn .yarn
 COPY src src
-COPY .env.production .yarnrc.yml package.json tsconfig.json next.config.js yarn.lock ./
+COPY .yarnrc.yml package.json tsconfig.json next.config.js yarn.lock ./
 
 RUN yarn && yarn build
 
@@ -21,7 +21,7 @@ RUN adduser -S nextjs -u 1001
 
 COPY .yarn .yarn
 COPY public public
-COPY .yarnrc.yml package.json yarn.lock .env.production ./
+COPY .yarnrc.yml package.json yarn.lock ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
 RUN yarn
