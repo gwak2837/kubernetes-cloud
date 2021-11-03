@@ -21,7 +21,7 @@ RUN adduser -S nextjs -u 1001
 
 COPY .yarn .yarn
 COPY public public
-COPY .yarnrc.yml package.json yarn.lock .env.production ./
+COPY .yarnrc.yml package.json yarn.lock env ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
 RUN yarn
