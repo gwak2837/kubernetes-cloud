@@ -6431,6 +6431,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jwt-decode@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "jwt-decode@npm:3.1.2"
+  checksum: 20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+  languageName: node
+  linkType: hard
+
 "kleur@npm:^3.0.3":
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
@@ -6455,6 +6462,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     husky: ^7.0.1
     jest: ^27.1.1
+    jwt-decode: ^3.1.2
     next: 11.1.2
     normalize.css: ^8.0.1
     prettier: ^2.4.0
