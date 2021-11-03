@@ -6,7 +6,7 @@ import { TABLET_MIN_WIDTH } from 'src/model/constant'
 import styled from 'styled-components'
 
 const MOBILE_HEADER_HEIGHT = '4rem'
-const DESKTOP_HEADER_WIDTH = '8rem'
+const DESKTOP_HEADER_WIDTH = '7rem'
 
 const GridContainer = styled.div`
   display: grid;
@@ -82,7 +82,7 @@ type Props = {
   children: ReactNode
 }
 
-export default function Navigation({ children }: Props) {
+export default function NavigationLayout({ children }: Props) {
   const router = useRouter()
 
   function logout(e: any) {
