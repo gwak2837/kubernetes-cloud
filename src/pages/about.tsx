@@ -62,8 +62,8 @@ export default function AboutPage() {
           <tr>
             <td>박성준</td>
             <td>
-              <a href="https://github.com/" target="_blank" rel="noreferrer">
-                @
+              <a href="https://github.com/pjw1702" target="_blank" rel="noreferrer">
+                @pjw1702
               </a>
             </td>
             <td>문서화</td>
@@ -80,8 +80,8 @@ export default function AboutPage() {
           <tr>
             <td>허상</td>
             <td>
-              <a href="https://github.com/" target="_blank" rel="noreferrer">
-                @
+              <a href="https://github.com/heosang" target="_blank" rel="noreferrer">
+                @heosang
               </a>
             </td>
             <td>SSL, HTTPS, IaC(Terraform)</td>
