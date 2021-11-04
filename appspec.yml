@@ -3,3 +3,17 @@ os: linux
 files:
   - source: /
     destination: /build-test/
+hooks:
+  BeforeInstall:
+    - location: /code-build-script/UnzipResourceBundle.sh
+    - location: /code-build-script/UnzipDataBundle.sh
+  AfterInstall:
+    - location: /code-build-script/RunResourceTests.sh
+      timeout: 180
+  ApplicationStart:
+    - location: /code-build-script/RunFunctionalTests.sh
+      timeout: 3600
+  ValidateService:
+    - location: /code-build-script/MonitorService.sh
+      timeout: 3600
+      runas: codedeployuser
