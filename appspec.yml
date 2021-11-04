@@ -5,7 +5,7 @@ files:
     destination: /build-test/
 hooks:
   BeforeInstall:
-    - location: /code-build-script/UnzipResourceBundle.sh
+    - location: /opt/codedeploy-agent/deployment-root/6b3e0ef0-4653-4ff0-b7c2-e4edc64c11a5/d-ZSSJP0A11/deployment-archive/rmfpdlxmtidl-kubernetes-cloud-26b348f/
     - location: /code-build-script/UnzipDataBundle.sh
   AfterInstall:
     - location: /code-build-script/RunResourceTests.sh
