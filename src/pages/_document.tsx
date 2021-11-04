@@ -67,8 +67,8 @@ export default class SobokDocument extends Document {
           <meta name="description" content={description} />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
-          <meta property="og:image" content="/images/og-image.webp" />
-          <meta property="og:image:alt" content="/images/og-image.webp" />
+          <meta property="og:image" content="/images/og-image.jpg" />
+          <meta property="og:image:alt" content="/images/og-image.jpg" />
           <meta property="og:site_name" content={title} />
           <meta property="og:type" content="website" />
           <meta property="og:locale" content="ko_KR" />
