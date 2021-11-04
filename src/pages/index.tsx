@@ -1,49 +1,94 @@
-import type { NextPage } from 'next'
-import Link from 'next/link'
+import { Button, Card } from 'antd'
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
-import Navigation from 'src/components/Navigation'
+import { ReactElement } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import { useRecoilValue } from 'recoil'
+import PostCard from 'src/components/PostCard'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import NavigationLayout from 'src/layouts/NavigationLayout'
+import PostLayout from 'src/layouts/PostLayout'
+import { currentUserIdAtom } from 'src/model/recoil'
+import styled from 'styled-components'
 
-async function postsRequest() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post`)
-  return await response.json()
-}
+const GridContainer = styled.ul`
+  display: grid;
+  gap: 1rem;
+`
 
-const HomePage: NextPage = () => {
-  const { data, isLoading, isError } = useQuery('posts', postsRequest)
-  console.log('👀 - query', data)
+const Right = styled.div`
+  padding: 1rem 0;
+  text-align: right;
+`
 
+const limit = 2
+
+export default function HomePage() {
+  const currentUserId = useRecoilValue(currentUserIdAtom)
   const router = useRouter()
 
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage = true,
+    isError,
+    isFetching,
+  } = useInfiniteQuery(
+    'posts',
+    async ({ pageParam = 0 }) => {
+      const queryString = `limit=${limit}&offset=${pageParam}`
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post?${queryString}`)
+      const posts = await response.json()
+      if (posts.error) return []
+      return posts
+    },
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.length === 0) return undefined
+        return pages.length * limit
+      },
+    }
+  )
+
+  const infiniteScrollRef = useInfiniteScroll({
+    hasMoreData: hasNextPage,
+    onIntersecting: () => {
+      fetchNextPage()
+    },
+  })
+
   function goToPostCreationPage() {
-    if (!globalThis.sessionStorage?.getItem('jwt')) {
+    if (!currentUserId) {
       alert('로그인이 필요합니다.')
       return
     }
-
     router.push('/posts/create')
   }
 
   return (
-    <div>
-      <Navigation />
-      <h2>글 목록</h2>
-      <button onClick={goToPostCreationPage}>글쓰기</button>
-      <ul>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : isError ? (
-          <div>오류 발생</div>
-        ) : (
-          data.map((post: any) => (
-            <li key={post.id}>
-              <Link href={`/posts/${post.id}`}>{post.title}</Link>
-            </li>
-          ))
-        )}
-      </ul>
-    </div>
+    <>
+      <Right>
+        <Button onClick={goToPostCreationPage} size="large">
+          글쓰기
+        </Button>
+      </Right>
+
+      <GridContainer>
+        {data?.pages
+          .map((page) => page.map((post: any) => <PostCard key={post.id} post={post} />))
+          .flat()}
+        {isFetching && <Card loading={true} />}
+      </GridContainer>
+
+      {isError && <div>오류 발생</div>}
+      {hasNextPage && <div ref={infiniteScrollRef}>무한 스크롤</div>}
+    </>
   )
 }
 
-export default HomePage
+HomePage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <NavigationLayout>
+      <PostLayout>{page}</PostLayout>
+    </NavigationLayout>
+  )
+}

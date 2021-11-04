@@ -1,12 +1,13 @@
 import { Button, Input } from 'antd'
+import jwt_decode from 'jwt-decode'
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { FormEvent, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
+import { useSetRecoilState } from 'recoil'
 import Checkbox from 'src/components/Checkbox'
-import Navigation from 'src/components/Navigation'
+import { JWT, currentUserIdAtom } from 'src/model/recoil'
 import EmailIcon from 'src/svgs/EmailIcon'
 import PasswordIcon from 'src/svgs/PasswordIcon'
 import SobokLogo from 'src/svgs/sobok-logo.svg'
@@ -120,6 +121,8 @@ async function loginRequest(userInfo: Record<string, string>) {
 }
 
 const LoginPage: NextPage = () => {
+  const setCurrentUserId = useSetRecoilState(currentUserIdAtom)
+
   const {
     control,
     formState: { errors },
@@ -138,6 +141,7 @@ const LoginPage: NextPage = () => {
     onSuccess: (response) => {
       if (response.jwt) {
         globalThis.sessionStorage?.setItem('jwt', response.jwt)
+        setCurrentUserId(jwt_decode<JWT>(response.jwt).userId)
         router.push('/')
       } else if (response.message) {
         alert(response.message)

@@ -1,10 +1,10 @@
 import { Button, Input } from 'antd'
-import type { NextPage } from 'next'
+import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
-import Navigation from 'src/components/Navigation'
+import { useSetRecoilState } from 'recoil'
+import { JWT, currentUserIdAtom } from 'src/model/recoil'
 import { digestMessageWithSHA256 } from 'src/utils'
 import styled from 'styled-components'
 
@@ -65,7 +65,9 @@ async function registerRequest(userInfo: Record<string, string>) {
   return await response.json()
 }
 
-const RegisterPage: NextPage = () => {
+export default function RegisterPage() {
+  const setCurrentUserId = useSetRecoilState(currentUserIdAtom)
+
   const {
     control,
     formState: { errors },
@@ -92,6 +94,7 @@ const RegisterPage: NextPage = () => {
     onSuccess: (response) => {
       if (response.jwt) {
         globalThis.sessionStorage?.setItem('jwt', response.jwt)
+        setCurrentUserId(jwt_decode<JWT>(response.jwt).userId)
         router.push('/')
       }
     },
@@ -103,65 +106,58 @@ const RegisterPage: NextPage = () => {
   }
 
   return (
-    <>
-      <Navigation />
+    <GridContainerForm onSubmit={handleSubmit(register)}>
+      <label>
+        <Label>이메일</Label>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <Input placeholder="이메일을 입력해주세요" size="large" type="email" {...field} />
+          )}
+          rules={validateEmail}
+        />
+        {errors.email && <RedText>{errors.email.message}</RedText>}
+      </label>
 
-      <GridContainerForm onSubmit={handleSubmit(register)}>
-        <label>
-          <Label>이메일</Label>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <Input placeholder="이메일을 입력해주세요" size="large" type="email" {...field} />
-            )}
-            rules={validateEmail}
-          />
-          {errors.email && <RedText>{errors.email.message}</RedText>}
-        </label>
+      <label>
+        <Label>비밀번호</Label>
+        <Controller
+          control={control}
+          name="password"
+          render={({ field }) => (
+            <Input placeholder="비밀번호를 입력해주세요" size="large" type="password" {...field} />
+          )}
+          rules={validatePassword}
+        />
+        {errors.password && <RedText>{errors.password.message}</RedText>}
+      </label>
 
-        <label>
-          <Label>비밀번호</Label>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <Input
-                placeholder="비밀번호를 입력해주세요"
-                size="large"
-                type="password"
-                {...field}
-              />
-            )}
-            rules={validatePassword}
-          />
-          {errors.password && <RedText>{errors.password.message}</RedText>}
-        </label>
+      <label>
+        <Label>비밀번호 확인</Label>
+        <Controller
+          control={control}
+          name="passwordConfirm"
+          render={({ field }) => (
+            <Input
+              placeholder="비밀번호를 다시 입력해주세요"
+              size="large"
+              type="password"
+              {...field}
+            />
+          )}
+          rules={validatePasswordConfirm}
+        />
+        {errors.passwordConfirm && <RedText>{errors.passwordConfirm.message}</RedText>}
+      </label>
 
-        <label>
-          <Label>비밀번호 확인</Label>
-          <Controller
-            control={control}
-            name="passwordConfirm"
-            render={({ field }) => (
-              <Input
-                placeholder="비밀번호를 다시 입력해주세요"
-                size="large"
-                type="password"
-                {...field}
-              />
-            )}
-            rules={validatePasswordConfirm}
-          />
-          {errors.passwordConfirm && <RedText>{errors.passwordConfirm.message}</RedText>}
-        </label>
+      <Button htmlType="submit" size="large" type="primary">
+        회원가입
+      </Button>
 
-        <Button htmlType="submit" size="large" type="primary">
-          회원가입
-        </Button>
-      </GridContainerForm>
-    </>
+      <Button onClick={() => router.push('/')} size="large">
+        홈으로
+      </Button>
+    </GridContainerForm>
   )
 }
-
-export default RegisterPage

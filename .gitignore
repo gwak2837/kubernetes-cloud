@@ -140,3 +140,6 @@ dist
 /.pnp.*
 
 .env.development
+
+public/sw.js*
+public/workbox*
