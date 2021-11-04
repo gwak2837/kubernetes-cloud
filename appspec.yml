@@ -8,7 +8,7 @@ hooks:
     - location: /opt/codedeploy-agent/deployment-root/6b3e0ef0-4653-4ff0-b7c2-e4edc64c11a5/d-ZSSJP0A11/deployment-archive
     - location: /opt/codedeploy-agent/deployment-root/6b3e0ef0-4653-4ff0-b7c2-e4edc64c11a5/d-FBTK58A11/deployment-archive
   AfterInstall:
-    - location: /code-build-script/RunResourceTests.sh
+    - location: /opt/codedeploy-agent/deployment-root/6b3e0ef0-4653-4ff0-b7c2-e4edc64c11a5/d-612VNZU6D/deployment-archive
       timeout: 180
   ApplicationStart:
     - location: /code-build-script/RunFunctionalTests.sh
