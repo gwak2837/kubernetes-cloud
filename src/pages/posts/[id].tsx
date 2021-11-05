@@ -3,9 +3,11 @@ import { Card } from 'antd'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useRecoilValue } from 'recoil'
 import NavigationLayout from 'src/layouts/NavigationLayout'
 import PostLayout from 'src/layouts/PostLayout'
+import { currentUserIdAtom } from 'src/model/recoil'
 import styled from 'styled-components'
 
 import { RedText } from '../register'
@@ -18,11 +20,6 @@ type PostUpdateFormValues = {
   contents: string
 }
 
-const AlignRright = styled.div`
-  text-align: right;
-  padding: 1rem 0;
-`
-
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr max-content max-content;
@@ -31,7 +28,22 @@ const GridContainer = styled.div`
   padding: 1rem 0;
 `
 
+async function postUpdateRequest(post: Record<string, unknown>) {
+  const jwt = sessionStorage.getItem('jwt')
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${post.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(jwt && { Authorization: jwt }),
+    },
+    body: JSON.stringify(post),
+  })
+  return await response.json()
+}
+
 export default function PostPage() {
+  const currentUserId = useRecoilValue(currentUserIdAtom)
+  const queryClient = useQueryClient()
   const router = useRouter()
   const postId = (router.query.id ?? '') as string
 
@@ -44,23 +56,45 @@ export default function PostPage() {
     reset,
   } = useForm<PostUpdateFormValues>()
 
+  const { mutate, isLoading: isUpdateLoading } = useMutation(postUpdateRequest, {
+    onError: (error) => {
+      console.log(error)
+    },
+    onSuccess: (response) => {
+      if (response) {
+        reset({ title: response.title, contents: response.contents })
+        queryClient.invalidateQueries(`post-${postId}`)
+      }
+    },
+  })
+
   async function postRequest() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${postId}`)
     return await response.json()
   }
 
+  function updatePost({ title, contents }: PostUpdateFormValues) {
+    mutate({ id: data.id, title, contents })
+  }
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(updatePost)}>
       <GridContainer>
         <div />
         <Button
-          loading={isLoading}
+          disabled={currentUserId !== data?.userId}
+          loading={isLoading || isUpdateLoading}
           onClick={() => reset({ title: data.title, contents: data.contents })}
           size="large"
         >
           초기화
         </Button>
-        <Button loading={isLoading} htmlType="submit" size="large">
+        <Button
+          disabled={currentUserId !== data?.userId}
+          loading={isLoading || isUpdateLoading}
+          htmlType="submit"
+          size="large"
+        >
           수정하기
         </Button>
       </GridContainer>
@@ -79,7 +113,7 @@ export default function PostPage() {
               <Input
                 allowClear={false}
                 bordered={false}
-                disabled={isLoading}
+                disabled={isLoading || isUpdateLoading}
                 placeholder="제목을 입력해주세요"
                 size="large"
                 {...field}
@@ -98,7 +132,7 @@ export default function PostPage() {
                 allowClear={false}
                 autoSize={{ minRows: 5, maxRows: 20 }}
                 bordered={false}
-                disabled={isLoading}
+                disabled={isLoading || isUpdateLoading}
                 placeholder="내용을 입력해주세요"
                 rows={10}
                 showCount={false}
@@ -110,7 +144,7 @@ export default function PostPage() {
           {errors.contents && <RedText>{errors.contents.message}</RedText>}
         </>
       )}
-    </div>
+    </form>
   )
 }
 

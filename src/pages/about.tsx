@@ -93,7 +93,7 @@ export default function AboutPage() {
 
       <footer>
         <GridContainerGap>
-          <h3>Copyright © {new Date().getUTCFullYear()} 이조오조, Inc. All rights reserved.</h3>
+          <h3>Copyright © {new Date().getUTCFullYear()} 이조오조. All rights reserved.</h3>
           <div>
             <div>
               <b>이조오조</b>
