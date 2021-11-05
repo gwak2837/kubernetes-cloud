@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /build-test/
+    destination: /code-deploy-frontend-target/
 hooks:
   BeforeInstall:
     - location: code-build-script/UnzipResourceBundle.sh
