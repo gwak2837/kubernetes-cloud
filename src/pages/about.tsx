@@ -62,8 +62,8 @@ export default function AboutPage() {
           <tr>
             <td>박성준</td>
             <td>
-              <a href="https://github.com/pjw1702" target="_blank" rel="noreferrer">
-                @pjw1702
+              <a href="https://github.com/" target="_blank" rel="noreferrer">
+                @
               </a>
             </td>
             <td>문서화</td>
@@ -71,8 +71,8 @@ export default function AboutPage() {
           <tr>
             <td>박정우</td>
             <td>
-              <a href="https://github.com/" target="_blank" rel="noreferrer">
-                @
+              <a href="https://github.com/pjw1702" target="_blank" rel="noreferrer">
+                @pjw1702
               </a>
             </td>
             <td>마이그레이션, CI/CD</td>
