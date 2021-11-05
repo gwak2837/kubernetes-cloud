@@ -135,6 +135,7 @@ export default function PostPage() {
                 disabled={isLoading || isUpdateLoading}
                 placeholder="내용을 입력해주세요"
                 rows={10}
+                size="large"
                 showCount={false}
                 {...field}
               />
