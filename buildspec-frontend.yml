@@ -17,5 +17,5 @@ phases:
       - echo Pushing the Docker image...
       - docker push 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
       - printf '[{"name":"code-pipeline-artifact-definition","imageUri":"%s"}]' 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest > imagedefinitions.json
-  artifacts:
-    files: imagedefinitions.json
+    artifacts:
+      files: imagedefinitions.json
