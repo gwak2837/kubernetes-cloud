@@ -16,3 +16,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
+    artifacts:
+      files: 
+        - '**/*'
+      name: BuildArtif
+      discard-path: no
+
