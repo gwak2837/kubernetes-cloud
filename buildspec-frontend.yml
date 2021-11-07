@@ -18,6 +18,6 @@ phases:
       - docker push 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
     artifacts:
       files: 
-        - 'kpc-25team-code-pipe/BuildArtif'
+        - '**/*'
       name: kpc-25team-front-build-artif
       discard-path: no
