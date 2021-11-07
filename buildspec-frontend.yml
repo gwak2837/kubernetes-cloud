@@ -19,6 +19,5 @@ phases:
     artifacts:
       files: 
         - '**/*'
-      name: BuildArtif
+      name: kpc-25team-front-build-artif
       discard-path: no
-
