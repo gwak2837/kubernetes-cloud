@@ -20,5 +20,5 @@ phases:
       files: 
         - '**/*'
       base-directory: /
-      name: kpc-25team-frontend-build-artifact
+      name: kpc-25team-code-build-artifact.zip
       discard-path: no
