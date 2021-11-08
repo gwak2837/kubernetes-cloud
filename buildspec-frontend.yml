@@ -21,4 +21,3 @@ phases:
         - '**/*'
       name: kpc-25team-front-build-artif
       discard-path: no
-      s3-prefix: codepipeline-ap-northeast-2-344854888447
