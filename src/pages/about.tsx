@@ -60,15 +60,6 @@ export default function AboutPage() {
             <td>프론트엔드, 백엔드</td>
           </tr>
           <tr>
-            <td>박성준</td>
-            <td>
-              <a href="https://github.com/" target="_blank" rel="noreferrer">
-                @
-              </a>
-            </td>
-            <td>문서화</td>
-          </tr>
-          <tr>
             <td>박정우</td>
             <td>
               <a href="https://github.com/pjw1702" target="_blank" rel="noreferrer">
