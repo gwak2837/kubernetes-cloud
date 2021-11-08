@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { currentUserIdAtom } from 'src/model/recoil'
 import styled from 'styled-components'
 
-const AbsolutePositionButton = styled(Button)`
+const AbsolutePosition = styled.div`
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
@@ -35,12 +35,11 @@ function PostCard({ post }: Props) {
 
   const { mutate, isLoading } = useMutation(postDeletionRequest, {
     onError: (error) => {
-      console.log(error)
+      alert(error)
     },
     onSuccess: (response) => {
       if (response.postId) {
         queryClient.invalidateQueries('posts')
-        router.push('/')
       }
     },
   })
@@ -63,17 +62,19 @@ function PostCard({ post }: Props) {
         </a>
       </Link>
       <div>{new Date(post.creationTime).toLocaleDateString()}</div>
-      <AbsolutePositionButton
-        danger
-        disabled={currentUserId !== post.userId}
-        loading={isLoading}
-        onClick={(e) => {
-          e.stopPropagation()
-          deletePost(post.id)
-        }}
-      >
-        <h5 style={{ color: 'inherit' }}>삭제</h5>
-      </AbsolutePositionButton>
+      <AbsolutePosition>
+        <Button
+          danger
+          disabled={currentUserId !== post.userId}
+          loading={isLoading}
+          onClick={(e) => {
+            e.stopPropagation()
+            deletePost(post.id)
+          }}
+        >
+          삭제
+        </Button>
+      </AbsolutePosition>
     </Card>
   )
 }
