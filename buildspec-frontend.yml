@@ -16,9 +16,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
+      - printf '[{"name":"code-pipeline-artifact-definition","imageUri":"%s"}]' 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest > kpc-25team-frontend-artifact.json
     artifacts:
       files: 
-        - '**/*'
-      name: kpc-25team-front-build-artif
+        - kpc-25team-frontend-artifact.json
       discard-path: no
       s3-prefix: codepipeline-ap-northeast-2-344854888447
