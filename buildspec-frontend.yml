@@ -21,4 +21,4 @@ phases:
       files: 
         - kpc-25team-frontend-artifact.json
       discard-path: no
-      s3-prefix: codepipeline-ap-northeast-2-344854888447
+      s3-prefix: codepipeline-ap-northeast-2-344854888447/kpc-25team-code-pipe/BuildArtif/
