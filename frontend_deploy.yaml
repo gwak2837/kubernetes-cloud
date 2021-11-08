@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-v2
+  labels:
+    app: frontend-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-v2
+  template:
+    metadata:
+      labels:
+        app: frontend-v2
+    spec:
+
+      containers:
+      - name: frontend-v2
+        image: 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
+        ports:
+        - containerPort: 4000
+        envFrom:
+        - configMapRef:
+            name: frontend-env
