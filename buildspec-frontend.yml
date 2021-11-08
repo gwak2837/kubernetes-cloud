@@ -18,7 +18,7 @@ phases:
       - docker push 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest
       - printf '[{"name":"Build","imageUri":"%s"}]' 499087382362.dkr.ecr.ap-northeast-2.amazonaws.com/kubernetes-cloud-frontend:latest > kpc-25team-frontend-artifact.json
       - curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-      - apt-get install -y -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
       - chmod +x kubectl
       - mkdir -p ~/.local/bin/kubectl
       - mv ./kubectl ~/.local/bin/kubectl
