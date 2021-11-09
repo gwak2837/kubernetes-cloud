@@ -21,5 +21,5 @@ phases:
       - install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
       - chmod +x kubectl
       - mkdir -p ~/.local/bin/kubectl
-      - mv ./kubectl ~/.local/bin/kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
       - kubectl apply -f frontend_deploy.yaml
